@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+	<AddIn Type="Application">
+		<Name>AddButtons</Name>
+		<Assembly>C:\ProgramData\Autodesk\Revit\Addins\2022\BIM_Integration.dll</Assembly>
+		<AddInId>37622B33-7934-437F-B859-4700B8313E64</AddInId>
+		<FullClassName>BIM_Integration.AddButtons</FullClassName>
+		<VendorId>Dar Develobement Team</VendorId>
+		<VendorDescription>Dar Develobement Team,aaa </VendorDescription>
+	</AddIn>
+</RevitAddIns>
+

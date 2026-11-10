@@ -1,0 +1,126 @@
+﻿using Autodesk.Revit.Attributes;
+using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+
+namespace BIM_Integration
+{
+    [Transaction(TransactionMode.Manual)]
+    internal class SheetCreation6 : IExternalCommand
+    {
+
+        public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
+        {
+            try
+            {
+                #region get Revit Data
+                UIDocument uidoc = commandData.Application.ActiveUIDocument;
+                Document doc = uidoc.Document;
+
+                // for Revit 2021 or above use (ForgeTypeId dis = UnitTypeId.Millimeters;),
+                // however, for Revit 2020 or lower use (ForgeTypeId dis = DisplayUnitType.DUT_MILLIMETERS;)
+                ForgeTypeId dis = UnitTypeId.Millimeters;
+                #endregion
+
+                using (Transaction trns = new Transaction(doc, "Distribute Views"))
+                {
+
+
+                    ViewSheet viewSheet = new FilteredElementCollector(doc)
+                        .OfClass(typeof(ViewSheet))
+                        .Cast<ViewSheet>()
+                        .FirstOrDefault(x => x.Title == "Sheet: S101 - TYP");
+
+                    FamilyInstance titleBlock = RevitUtils.getTitleBlockInViewSHeet(doc, viewSheet);
+                    Outline titleBlockOutline = RevitUtils.TitleBlockDrawingAreaBoundary(titleBlock.Symbol);
+
+
+
+                    XYZ upperLeftPoint = new XYZ(titleBlockOutline.MinimumPoint.X,titleBlockOutline.MaximumPoint.Y,0);
+                    XYZ lowerLeftPoint = titleBlockOutline.MinimumPoint;
+                    XYZ upperRightPoint = titleBlockOutline.MaximumPoint;
+                    //upperLeftPoint2
+
+                    trns.Start();
+                    // List of views to distribute
+                    List<ViewPlan> viewsToDistribute = new FilteredElementCollector(doc)
+                                             .OfClass(typeof(ViewPlan))
+                                             .Cast<ViewPlan>()
+                                             .Where(x => x.Name.Contains("ST-00-GF2") && x.ViewType == ViewType.FloorPlan)
+                                             .ToList().OrderBy(x => Math.Abs(x.Outline.Max.U - x.Outline.Min.U)).ThenBy(x => Math.Abs(x.Outline.Max.V - x.Outline.Min.V)).ToList();
+
+                    List<double> viewsWidths = viewsToDistribute.Select(x => Math.Abs(x.Outline.Max.U - x.Outline.Min.U)).ToList();
+                    List<double> viewsHights= viewsToDistribute.Select(x => Math.Abs(x.Outline.Max.V - x.Outline.Min.V)).ToList();
+
+
+
+                    // Fill the viewsToDistribute list with your desired views
+
+                    double spacing = UnitUtils.ConvertToInternalUnits(10, dis);
+                    double xOffset = upperLeftPoint.X;
+                    double yOffset = upperLeftPoint.Y;
+
+                    int viewIndex = 0;
+                    double maxHeight = 0;
+
+                    while (viewIndex < viewsToDistribute.Count)
+                    {
+                        ViewPlan view = viewsToDistribute[viewIndex];
+
+                        double width = viewsWidths[viewIndex];
+                        double height = viewsHights[viewIndex];
+
+                        if (height > maxHeight)
+                            maxHeight = height;
+
+                        if (xOffset + width > upperRightPoint.X) // If the view exceeds the sheet's width
+                        {
+                            xOffset = upperLeftPoint.X; // Reset xOffset
+                            yOffset -= maxHeight + spacing; // Add some spacing between views
+                            maxHeight = height;
+                            if (yOffset - height < lowerLeftPoint.Y) // If the view exceeds the sheet's height
+                            {
+
+                                // Sheet is full, duplicate and reset offsets
+                                string newSheetName = viewSheet.Name + "_" + viewIndex;
+                                string newSheetNumber = viewSheet.SheetNumber + "_" + viewIndex;
+                                viewSheet = ViewSheet.Create(doc, titleBlock.GetTypeId());
+
+                                viewSheet.Name = newSheetName;
+                                viewSheet.SheetNumber = newSheetNumber;
+
+
+                                xOffset = upperLeftPoint.X;
+                                yOffset = upperLeftPoint.Y;
+                            }
+                        }
+
+                        XYZ newLocationPoint = new XYZ(xOffset + width / 2, yOffset - height / 2, 0);
+                        Viewport viewport = Viewport.Create(doc, viewSheet.Id, view.Id, newLocationPoint);
+
+                        // Adjust the xOffset for the next view
+                        xOffset += width + spacing; // Add some spacing between views
+                        viewIndex++;
+                    }
+
+                    doc.Regenerate();
+
+                    trns.Commit();
+                }
+
+                return Result.Succeeded;
+            }
+            catch (Exception ex2)
+            {
+                System.Diagnostics.StackTrace trace = new System.Diagnostics.StackTrace(ex2, true);
+                TaskDialog.Show("Error", "Error in adding views: " + ex2.Message + " Line: " + trace.GetFrame(trace.FrameCount - 1).ToString());
+                return Result.Failed;
+            }
+
+        }
+
+    }
+}
