@@ -12,7 +12,7 @@ namespace BIM_Integration.STAAD
 {
    public class StaadUtils
     {
-        public static OpenSTAAD staadobject = Marshal.GetActiveObject("StaadPro.OpenStaad") as OpenSTAAD;
+        public static OpenSTAAD staadobject = ComActiveObject.Get("StaadPro.OpenStaad") as OpenSTAAD;
         public static IOSGeometryUI gometry = staadobject.Geometry;
         public static IOSCommandsUI command = staadobject.Command;
         public static IOSDesignUI design = staadobject.Design;

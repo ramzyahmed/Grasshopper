@@ -1,0 +1,169 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Logic assembly that the Grasshopper components (in "Grasshopper reference") load by reflection.
+       net48         -> Revit 2024 (.NET Framework), loaded by the net48 .gha (Rhino 7 / Rhino 8 .NET Framework)
+       net8.0-windows -> Revit 2025 (.NET 8), loaded by the net7.0-windows .gha (Rhino 8 .NET Core)
+       Output goes to <Desktop>\Build\BimIntegrationForGH\<TargetFramework>\ and the .gha reads it from there
+       (see HardCodedData.Bim_directoryPath in the reference project). -->
+  <PropertyGroup>
+    <TargetFrameworks>net48;net8.0-windows</TargetFrameworks>
+    <AssemblyName>BIM_Integration</AssemblyName>
+    <RootNamespace>BIM_Integration</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <Deterministic>true</Deterministic>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <NoWarn>$(NoWarn);CS0618;CS0612;CS0168;CS0219;CS0414;CS0649;CS0169;CS8981;NU1701;MSB3277;CA1416</NoWarn>
+  </PropertyGroup>
+
+  <!-- Shared third-party binaries: the old Utils\API dlls folder when present, otherwise the BimIntegration - Main\Binaries copy. -->
+  <PropertyGroup>
+    <ApiDllsDir Condition="Exists('..\..\..\Utils\API dlls')">..\..\..\Utils\API dlls\</ApiDllsDir>
+    <ApiDllsDir Condition="'$(ApiDllsDir)' == ''">..\..\..\BimIntegration - Main\Binaries\</ApiDllsDir>
+    <!-- SAFE API (used for the SAFE/Revit integration): installed SAFE first, then the API documentation copy. -->
+    <CsiApiDll Condition="Exists('C:\Program Files\Computers and Structures\SAFE 23\CSiAPIv1.dll')">C:\Program Files\Computers and Structures\SAFE 23\CSiAPIv1.dll</CsiApiDll>
+    <CsiApiDll Condition="'$(CsiApiDll)' == ''">..\..\..\0API Documentation For Etabs and SAP\CSIAPIv1\CSiAPIv1.dll</CsiApiDll>
+    <BimBuildRoot>$([System.Environment]::GetFolderPath(SpecialFolder.Desktop))\Build\BimIntegrationForGH\</BimBuildRoot>
+    <OutputPath>$(BimBuildRoot)</OutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net48'">
+    <RevitYear>2024</RevitYear>
+    <DefineConstants>$(DefineConstants);REVIT2024;REVIT2024_OR_GREATER</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0-windows'">
+    <RevitYear>2025</RevitYear>
+    <DefineConstants>$(DefineConstants);REVIT2025;REVIT2024_OR_GREATER</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="ChangeEtabsSectionNames.cs" />
+    <Compile Include="ChangeSapSectionNames.cs" />
+    <Compile Include="Chops.cs" />
+    <Compile Include="Compat\ComActiveObject.cs" />
+    <Compile Include="Constants\HardCodedData.cs" />
+    <Compile Include="Etabs\NEW\M_MappingEtabsToRvt - Copy.cs" />
+    <Compile Include="Helper\DataSerilaizationHelper.cs" />
+    <Compile Include="Helper\VectorHelper.cs" />
+    <Compile Include="HYDRA\ClassesDefintions_HYdra.cs" />
+    <Compile Include="HYDRA\M_RvtToStaad.cs" />
+    <Compile Include="HYDRA\StaadUtils_HYDRA.cs" />
+    <Compile Include="MyGrasshopperAssembly1\ETABS\RhinoEtabs.cs" />
+    <Compile Include="MyGrasshopperAssembly1\RhinoAddin\TrialToUseRhinoCommonds - Copy.cs" />
+    <Compile Include="MyGrasshopperAssembly1\Sap\RhinoSap.cs" />
+    <Compile Include="MyGrasshopperAssembly1\Revit\RhinoRevit.cs" />
+    <Compile Include="MyGrasshopperAssembly1\RhinoAddin\TrialToUseRhinoCommonds.cs" />
+    <Compile Include="Rvt\SapToEtabs.cs" />
+    <Compile Include="Rvt\UpGradeBeams.cs" />
+    <Compile Include="Rvt\BtnUpdateGeometry.cs" />
+    <Compile Include="Rvt\BtnUpdateSections.cs" />
+    <Compile Include="Rvt\BtnAutomation.cs" />
+    <Compile Include="Rvt\BeamsToDownGrade.cs" />
+    <Compile Include="Rvt\NewFolder1\AddViewRefrences.cs" />
+    <Compile Include="Rvt\NewFolder1\placeFamilyInstance.cs" />
+    <Compile Include="Rvt\NewFolder1\gridExtend.cs" />
+    <Compile Include="Rvt\NewFolder1\createSheetsWithDependentViews.cs" />
+    <Compile Include="Rvt\Test.cs" />
+    <Compile Include="Rvt\DivideCurvedBeams.cs" />
+    <Compile Include="Rvt\NewFolder1\createSheets 6.cs" />
+    <Compile Include="Rvt\NewFolder1\createSheets 5.cs" />
+    <Compile Include="Rvt\NewFolder1\createSheets 4 .cs" />
+    <Compile Include="Rvt\NewFolder1\createSheets 3 .cs" />
+    <Compile Include="Rvt\NewFolder1\createSheets 2.cs" />
+    <Compile Include="Rvt\M_BeamToColumn.cs" />
+    <Compile Include="Rvt\M_ColumnToBeam.cs" />
+    <Compile Include="Etabs\M_ConvertFromSegementsToLines.cs" />
+    <Compile Include="Etabs\M_MappingEtabsToRvt.cs" />
+    <Compile Include="Etabs\M_RvtToEtabsUpdateAll.cs" />
+    <Compile Include="Etabs\M_RvtToEtabsUpdateGeometry.cs" />
+    <Compile Include="Etabs\M_RvtToEtabsUpdateSections.cs" />
+    <Compile Include="Etabs\M_EtabsToRvtUpdateAll.cs" />
+    <Compile Include="Etabs\M_EtabsToRvtUpdateGeometry.cs" />
+    <Compile Include="Etabs\M_EtabsToRvtUpdateSections.cs" />
+    <Compile Include="Etabs\EtabsUtils.cs" />
+    <Compile Include="SAP\M_ConvertFromSegementsToLines.cs" />
+    <Compile Include="SAP\M_Mapping_SaptoRvt.cs" />
+    <Compile Include="SAP\M_RvtToSapUpdateAll.cs" />
+    <Compile Include="SAP\M_RvtToSapUpdateSections.cs" />
+    <Compile Include="SAP\M_RvtToSapUpdateGeometry.cs" />
+    <Compile Include="SAP\M_SapToRvtUpdateGeometry.cs" />
+    <Compile Include="SAP\M_SapToRvtUpdateAll.cs" />
+    <Compile Include="Rvt\ChangeColorsBasedOnSections.cs" />
+    <Compile Include="SAP\M_SapToRvtUpdateSections.cs" />
+    <Compile Include="Rvt\RevitUtils.cs" />
+    <Compile Include="Rvt\AddButtons.cs" />
+    <Compile Include="SAP\SapUtils.cs" />
+    <Compile Include="ExcelUtils.cs" />
+    <Compile Include="ClassesDefintions.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="STAAD\M_Mapping_StdtoRvt.cs" />
+    <Compile Include="STAAD\M_RvtToStaadUpdateAll.cs" />
+    <Compile Include="STAAD\M_RvtToStaadUpdateGeometry.cs" />
+    <Compile Include="STAAD\M_RvtToStaadUpdateSections.cs" />
+    <Compile Include="STAAD\M_StaadToRvtUpdateAll.cs" />
+    <Compile Include="STAAD\M_StaadToRvtUpdateGeometry.cs" />
+    <Compile Include="STAAD\M_StaadToRvtUpdateSections.cs" />
+    <Compile Include="STAAD\StaadUtils.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="app.manifest" />
+    <None Include="Rvt\BIM_Integration_AddButtons.addin" />
+    <Resource Include="Resources\HYDRA.jpg" />
+    <Resource Include="Resources\HYDRA_1.jpg" />
+  </ItemGroup>
+
+  <!-- System.Range (.NET Core) collides with Excel's Range, and Rhino 8's Rhino.DocObjects.Environment with System.Environment,
+       wherever both namespaces are imported. -->
+  <ItemGroup>
+    <Using Include="Microsoft.Office.Interop.Excel.Range" Alias="Range" />
+    <Using Include="System.Environment" Alias="Environment" />
+  </ItemGroup>
+
+  <!-- Rhino / Grasshopper: compile-only, the host (Rhino) supplies the runtime copies. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <PackageReference Include="Grasshopper" Version="7.35.23346.11001" IncludeAssets="compile;build" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' == 'net8.0-windows'">
+    <PackageReference Include="Grasshopper" Version="8.0.23304.9001" IncludeAssets="compile;build" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <!-- Revit API (per year) -->
+  <ItemGroup>
+    <Reference Include="RevitAPI"><HintPath>..\..\..\BimIntegration - Main\Binaries\Revit$(RevitYear)\RevitAPI.dll</HintPath><Private>False</Private></Reference>
+    <Reference Include="RevitAPIUI"><HintPath>..\..\..\BimIntegration - Main\Binaries\Revit$(RevitYear)\RevitAPIUI.dll</HintPath><Private>False</Private></Reference>
+    <Reference Include="RevitServices"><HintPath>..\..\..\BimIntegration - Main\Binaries\Revit$(RevitYear)\RevitServices.dll</HintPath><Private>False</Private></Reference>
+  </ItemGroup>
+
+  <!-- CSI / STAAD / Excel / Rhino.Inside binaries shared by every target -->
+  <ItemGroup>
+    <Reference Include="ETABSv1"><HintPath>$(ApiDllsDir)ETABSv1.dll</HintPath></Reference>
+    <Reference Include="SAP2000v1"><HintPath>$(ApiDllsDir)SAP2000v1.dll</HintPath></Reference>
+    <Reference Include="CSiAPIv1"><HintPath>$(CsiApiDll)</HintPath><Private>False</Private></Reference>
+    <Reference Include="Interop.StaadPro"><HintPath>$(ApiDllsDir)Interop.StaadPro.dll</HintPath><EmbedInteropTypes>true</EmbedInteropTypes><Private>False</Private></Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel"><HintPath>$(ApiDllsDir)Microsoft.Office.Interop.Excel.dll</HintPath><EmbedInteropTypes>true</EmbedInteropTypes><Private>False</Private></Reference>
+    <Reference Include="RhinoInside.Revit"><HintPath>$(ApiDllsDir)RhinoInside.Revit.dll</HintPath><Private>False</Private></Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.DirectoryServices.AccountManagement" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data.DataSetExtensions" />
+  </ItemGroup>
+
+</Project>

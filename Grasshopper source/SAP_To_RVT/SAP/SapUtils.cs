@@ -20,7 +20,6 @@ using Frame = BIM_Integration.Frame;
 using Line = Autodesk.Revit.DB.Line;
 using Parameter = Autodesk.Revit.DB.Parameter;
 using Point = BIM_Integration.Point;
-using Range = Microsoft.Office.Interop.Excel.Range;
 
 
 namespace BIM_Integration
@@ -35,7 +34,7 @@ namespace BIM_Integration
             /// cOAPI mySapObject = (cOAPI)System.Runtime.InteropServices.Marshal.GetActiveObject("CSI.SAP2000.API.SapObject");
             // SAP2000v1.cSapModel mysapmodel = (cSapModel) System.Runtime.InteropServices.Marshal.GetActiveObject("CSI.SAP2000.API.SapModel");
 
-            SAP2000v1.cOAPI mySapObject2 = Marshal.GetActiveObject("CSI.SAP2000.API.SapObject") as SAP2000v1.cOAPI;
+            SAP2000v1.cOAPI mySapObject2 = ComActiveObject.Get("CSI.SAP2000.API.SapObject") as SAP2000v1.cOAPI;
 
             mySapObject2.SapModel.SetPresentUnits(eUnits.Ton_mm_C);
 

@@ -11,7 +11,7 @@ namespace BIM_Integration_Hydra
     class StaadUtils_HYDRA
     {
 
-        public static OpenSTAAD staadobject = Marshal.GetActiveObject("StaadPro.OpenStaad") as OpenSTAAD;
+        public static OpenSTAAD staadobject = BIM_Integration.ComActiveObject.Get("StaadPro.OpenStaad") as OpenSTAAD;
         public static IOSGeometryUI gometry = staadobject.Geometry;
         public static IOSCommandsUI command = staadobject.Command;
         public static IOSDesignUI design = staadobject.Design;

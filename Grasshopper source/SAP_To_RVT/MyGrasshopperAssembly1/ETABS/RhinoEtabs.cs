@@ -2430,7 +2430,7 @@ namespace MyGrasshopperAssembly2
             /// cOAPI mySapObject = (cOAPI)System.Runtime.InteropServices.Marshal.GetActiveObject("CSI.SAP2000.API.SapObject");
             // ETABSv1.cSapModel mysapmodel = (cSapModel) System.Runtime.InteropServices.Marshal.GetActiveObject("CSI.SAP2000.API.SapModel");
 
-            ETABSv1.cOAPI mySapObject2 = Marshal.GetActiveObject("CSI.ETABS.API.ETABSObject") as ETABSv1.cOAPI;
+            ETABSv1.cOAPI mySapObject2 = ComActiveObject.Get("CSI.ETABS.API.ETABSObject") as ETABSv1.cOAPI;
 
             mySapObject2.SapModel.SetPresentUnits(eUnits.Ton_mm_C);
 

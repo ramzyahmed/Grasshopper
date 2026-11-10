@@ -5,6 +5,10 @@ VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BIM Integration", "Sap_To_RVT\BIM Integration.csproj", "{8B5E930A-705B-4937-B3AA-AE66432CE9F8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Grasshopper reference", "Grasshopper reference", "{7A93C898-1370-F09E-8691-E5E355E81A1F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyGrasshopperAssembly1", "Grasshopper reference\MyGrasshopperAssembly1\MyGrasshopperAssembly1.csproj", "{73294F97-B9AE-4C0C-B178-042188AEE43D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,9 +27,24 @@ Global
 		{8B5E930A-705B-4937-B3AA-AE66432CE9F8}.Release|Any CPU.ActiveCfg = Release|x64
 		{8B5E930A-705B-4937-B3AA-AE66432CE9F8}.Release|x64.ActiveCfg = Release|x64
 		{8B5E930A-705B-4937-B3AA-AE66432CE9F8}.Release|x86.ActiveCfg = Release|x64
+		{73294F97-B9AE-4C0C-B178-042188AEE43D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73294F97-B9AE-4C0C-B178-042188AEE43D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73294F97-B9AE-4C0C-B178-042188AEE43D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{73294F97-B9AE-4C0C-B178-042188AEE43D}.Debug|x64.Build.0 = Debug|Any CPU
+		{73294F97-B9AE-4C0C-B178-042188AEE43D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{73294F97-B9AE-4C0C-B178-042188AEE43D}.Debug|x86.Build.0 = Debug|Any CPU
+		{73294F97-B9AE-4C0C-B178-042188AEE43D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73294F97-B9AE-4C0C-B178-042188AEE43D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73294F97-B9AE-4C0C-B178-042188AEE43D}.Release|x64.ActiveCfg = Release|Any CPU
+		{73294F97-B9AE-4C0C-B178-042188AEE43D}.Release|x64.Build.0 = Release|Any CPU
+		{73294F97-B9AE-4C0C-B178-042188AEE43D}.Release|x86.ActiveCfg = Release|Any CPU
+		{73294F97-B9AE-4C0C-B178-042188AEE43D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{73294F97-B9AE-4C0C-B178-042188AEE43D} = {7A93C898-1370-F09E-8691-E5E355E81A1F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4D2A6C44-5E42-466A-AE77-6A17E6153737}

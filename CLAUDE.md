@@ -6,6 +6,10 @@
 
 Grasshopper/Rhino and SAP-to-Revit integration experiments. No project-specific rules are recorded yet: read the code before assuming. Rhino, Revit and SAP2000 DLLs are not committed: restore them from local installs.
 
+Layout: `Grasshopper source\` holds the logic project `SAP_To_RVT\BIM Integration.csproj` (assembly `BIM_Integration`, Revit/ETABS/SAP/STAAD code) and `BIM_Integration.sln`, which also contains `Grasshopper reference\MyGrasshopperAssembly1` (the Grasshopper components). The components call the logic by reflection (`ReflectionFrom`): the source project builds to `<Desktop>\Build\BimIntegrationForGH\<TargetFramework>\` and each `.gha` loads the folder matching its own framework (`HardCodedData.Bim_directoryPath`). Build the source project first. Both projects are multi-target: source `net48` (Revit 2024 API) + `net8.0-windows` (Revit 2025 API); reference `net48` + `net7.0-windows`. Source uses the shared DLLs in `Utils\API dlls` if it exists, else `BimIntegration - Main\Binaries`. `Marshal.GetActiveObject` does not exist on .NET 8: use `ComActiveObject.Get` (`Compat\`). Revit 2025 removed `BuiltInParameterGroup`: use `GroupTypeId`.
+
+`MyGrasshopperAssembly1` multi-targets two builds: `net48` (.NET Framework: Rhino 7, and Rhino 8 in .NET Framework mode; Grasshopper 7.18) and `net7.0-windows` (.NET Core: Rhino 8 default runtime; Grasshopper 8.0). `dotnet build` produces a `.gha` in `bin\<config>\<tfm>\`. The `RhinoInside.Revit` reference is net48 only (no code uses it); `System.Drawing.Common` is compile-only on net7.0.
+
 ## Cloud session notes
 
 - Cloud sessions run on Linux: they cannot build or run WPF/WinForms apps, ETABS, SAP2000, Revit or Office. Edit carefully, run only tests that build on Linux, and state clearly what was not verified.

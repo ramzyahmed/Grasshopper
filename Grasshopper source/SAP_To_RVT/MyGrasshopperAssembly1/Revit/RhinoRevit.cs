@@ -7543,7 +7543,7 @@ namespace MyGrasshopperAssembly2
                                     try
                                     {
                                         // 🔹 Filter: only Identity Data
-                                        if (parentParam.Definition.ParameterGroup != BuiltInParameterGroup.PG_IDENTITY_DATA)
+                                        if (parentParam.Definition.GetGroupTypeId() != GroupTypeId.IdentityData)
                                             continue;
 
                                         if (!parentParam.HasValue)
@@ -7992,7 +7992,7 @@ namespace MyGrasshopperAssembly2
                                     try
                                     {
                                         // 🔹 Filter: only Identity Data
-                                        if (parentParam.Definition.ParameterGroup != BuiltInParameterGroup.PG_IDENTITY_DATA)
+                                        if (parentParam.Definition.GetGroupTypeId() != GroupTypeId.IdentityData)
                                             continue;
 
                                         if (!parentParam.HasValue)
@@ -8276,7 +8276,7 @@ namespace MyGrasshopperAssembly2
 
         private static CSiAPIv1.cSapModel getCSapModel()
         {
-            CSiAPIv1.cOAPI mySafeObject = (CSiAPIv1.cOAPI)System.Runtime.InteropServices.Marshal.GetActiveObject("CSI.SAFE.API.ETABSObject");
+            CSiAPIv1.cOAPI mySafeObject = (CSiAPIv1.cOAPI)ComActiveObject.Get("CSI.SAFE.API.ETABSObject");
 
             CSiAPIv1.cSapModel mySapModel = mySafeObject.SapModel;
 

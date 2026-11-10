@@ -37,7 +37,7 @@ namespace BIM_Integration
 
         public static cSapModel Get_sap_mode()
         {
-            ETABSv1.cOAPI mySapObject2 = (ETABSv1.cOAPI)Marshal.GetActiveObject("CSI.ETABS.API.ETABSObject");
+            ETABSv1.cOAPI mySapObject2 = (ETABSv1.cOAPI)ComActiveObject.Get("CSI.ETABS.API.ETABSObject");
             mySapObject2.SapModel.SetPresentUnits(eUnits.Ton_mm_C);
 
 
